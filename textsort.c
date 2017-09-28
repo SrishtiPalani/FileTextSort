@@ -1,6 +1,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 
+//just checking
 int wordNum;	
 #define maxLineLength 128;	
 int lineNum; 
