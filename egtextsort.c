@@ -1,91 +1,94 @@
+//A sorting program that will be used to sort lines of text
+//Collaborated with Vickie, Moe
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-int wordNum = 0;						//we use a global variable for the word number parameter
-											//so we can use it in our string comparison function
-int maxLineLength = 129;			//one extra character for a line end
-int lineAllocation = 100;											//we allocate 100 lines to start - we reallocate later if we need more
-
+//the maximum line length is 128 as specified 			
+int maxLineLength = 128;
+//the word number used as the key to sort upon
+int wordNum = 0;
+//we allocate 100 lines to start - we reallocate later if we need more			
+int lineAllocation = 100; 
 //comparison funtion
-int wordcompare(const void *a, const void *b) {
+int wordcompare(const void *string1, const void *string2) {
 
-	//we need to convert our comparison function inputs to char pointers
-	char *string1 = *(char **) a;
-	char *string2 = *(char **) b;
-
-	//and we need to allocate some memory for variables to copy the strings to
-		//this is so that we can tokenize iA and iB without changing them
+	//convert to char pointers - cast
+	string1 = * (char **) string1;
+	//allocated memory for the line to be stored in an array
 	char * str1copy = (char *) malloc(strlen(string1) + 1);
-	//make sure to make a copy of the original string line 1 for later use.
+	//and we create a copy of the original string line 1 for later use because strtok is destructive
 	strcpy(str1copy, string1);
-	char * str2copy = (char *) malloc(strlen(string2) + 1);
-	//make sure to make a copy of the original string line 2 for later use.
-	strcpy(str2copy, string2);
+	//chop lines into words using strtok by space
+	char * tokenized1 = strtok((char *) str1copy, " ");
+	//allocate memory in a char array for 128 words in the line
+	char * str1[maxLineLength];
+	//allocate memory for the first word to be stored in
+	str1[0] = (char *) malloc(strlen(tokenized1) + 1);
+	strcpy(str1[0], tokenized1);
 
-	//now we tokenize string A and create a string (strA) where we keep a substring
-		//of it - we start by just the first word
-	char * tokenA = strtok((char *) str1copy, " ");
-	char * strA[129];
-	strA[0] = (char *) malloc(strlen(tokenA) + 1);
-	strcpy(strA[0], tokenA);
-	char * wordToCompareA = NULL;
+	
+	//initialize the pointer to the word that we will be comparing
+	char *word1 = NULL;
 	int i = 1; 
-
-	//and then we add a number of words so that the number of words in our substring
-		//is equal to the numeric parameter passed in
-	while((i <= wordNum) && (tokenA != NULL)) {
-		//we set tokenA to the next word
-		tokenA = strtok(NULL, " ");
-		//if we're not at the end of the current line yet, we add a word to strA
-			//and continue looping, looking for the word to compare
-		if (tokenA != NULL) {
-			strA[i] = (char *) malloc(strlen(tokenA) + 1);
-			strcpy(strA[i], tokenA);
-			//strA[i] = strdup(tokenA);
+	//if the word we're on currently is less than the word we have to sort by 
+	//and there are still tokens in the line to be read
+	while((i <= wordNum) && (tokenized1 != NULL)) {
+		//in order to get next token and to continue with the same string NULL 
+		//is passed as first argument since strtok maintains a static pointer to your previous passed string.
+		tokenized1 = strtok(NULL, " ");
+		//if the next word is not null i.e. there is still line left to be read
+		if (tokenized1 != NULL) {
+			//allocate memory & set it to continue looking for the word to compare with
+			str1[i] = (char *) malloc(strlen(tokenized1) + 1);
+			strcpy(str1[i], tokenized1);
 		}
-		//if we're at the end of the current line, we store the last word on the
-			//current line and use that as the word to compare
+		//if the next word is not null i.e. we're at the end of the line 
 		else {
-			//using strdup instead of strcpy because wordToCompareA is a pointer to a character
-			wordToCompareA = strdup(strA[i - 1]);
-			break;
+			//we use the previous word as the word to compare with instead
+			//using strdup instead of strcpy because word1 is a pointer
+			word1 = strdup(str1[i - 1]);
+			
 		}
 		i++;
 	}
 
-	//if we still don't have a word to compare, we use the last token we were on
-	if (wordToCompareA == NULL) {
-		wordToCompareA = strdup(tokenA);
+	//We traversed the entire line and we did not find the word that we were to sort on
+	//just use the last word on the line
+	if (word1 == NULL) {
+		word1 = strdup(tokenized1);
 	}
 
-	//and then we do the same thing for the string we're comparing with
-	char * tokenB = strtok((char *) str2copy, " ");
-	char * strB[129];
-	char * wordToCompareB = NULL;
-
-	strB[0] = (char *)malloc(strlen(tokenB) + 1);
-	strcpy(strB[0], tokenB);
+	//Similar to how we created a copy of the line, chopped it up by spaces, and set the word to compare by
+	//we do the same for the second word to compare by
+	string2 = * (char **) string2;
+	char * str2copy = (char *) malloc(strlen(string2) + 1);
+	strcpy(str2copy, string2);
+	char * tokenized2 = strtok((char *) str2copy, " ");
+	char * str2[maxLineLength];
+	
+	char * word2 = NULL;
+	str2[0] = (char *)malloc(strlen(tokenized2) + 1);
+	strcpy(str2[0], tokenized2);
 	int j = 1; 
 
-	while((j <= wordNum) && (tokenB != NULL)) {
-		tokenB = strtok(NULL, " ");
-		if (tokenB != NULL) {
-			strB[j] = (char *)malloc(strlen(tokenB) + 1);
-			strcpy(strB[j], tokenB);
+	while((j <= wordNum) && (tokenized2 != NULL)) {
+		tokenized2 = strtok(NULL, " ");
+		if (tokenized2 != NULL) {
+			str2[j]=(char *)malloc(strlen(tokenized2) + 1);
+			strcpy(str2[j], tokenized2);
 		}
 		else {
-			wordToCompareB = strdup(strB[j - 1]);
-			break;
-		}
+			word2 = strdup(str2[j - 1]);}
 		j++; 
 	}
 
-	if (wordToCompareB == NULL) {
-		wordToCompareB = strdup(tokenB);
+	if (word2 == NULL) {
+		word2 = strdup(tokenized2);
 	}
 
-	return strcmp(wordToCompareA, wordToCompareB);
+	//printf ("The word1 is: %s\n", word1); 
+	//printf("The word2 is: %s\n", word2);
+	return strcmp(word1, word2);
 }
 
 
@@ -217,8 +220,7 @@ int main(int argc, char **argv)
 
 	printf("\n%s\n", "\n----------\n");
 	printf("%s%d%s\n", "File sorted on word #", (wordNum + 1),":\n");
-	for (line = 0;
- line <= lines; line++)
+	for (line = 0; line <= lines; line++)
 	{
 		printf("%s\n", textArray[line]);
 	}
