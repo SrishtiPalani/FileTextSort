@@ -74,5 +74,6 @@ int main( int argc, char ** argv)
 
 			lineNum = morelineNum;
 		}
+	}
 return 0;
 }
