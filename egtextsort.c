@@ -30,11 +30,11 @@ int wordcompare(const void *a, const void *b) {
 	strA[0] = (char *) malloc(strlen(tokenA) + 1);
 	strcpy(strA[0], tokenA);
 	char * wordToCompareA = NULL;
-	
+	int i = 1; 
 
 	//and then we add a number of words so that the number of words in our substring
 		//is equal to the numeric parameter passed in
-	for (int i = 1; (i <= wordNum) && (tokenA != NULL); i++) {
+	while((i <= wordNum) && (tokenA != NULL)) {
 		//we set tokenA to the next word
 		tokenA = strtok(NULL, " ");
 		//if we're not at the end of the current line yet, we add a word to strA
@@ -51,6 +51,7 @@ int wordcompare(const void *a, const void *b) {
 			wordToCompareA = strdup(strA[i - 1]);
 			break;
 		}
+		i++;
 	}
 
 	//if we still don't have a word to compare, we use the last token we were on
@@ -65,19 +66,19 @@ int wordcompare(const void *a, const void *b) {
 
 	strB[0] = (char *)malloc(strlen(tokenB) + 1);
 	strcpy(strB[0], tokenB);
-	
+	int j = 1; 
 
-	for (int j = 1; (j <= wordNum) && (tokenB != NULL); j++) {
+	while((j <= wordNum) && (tokenB != NULL)) {
 		tokenB = strtok(NULL, " ");
 		if (tokenB != NULL) {
 			strB[j] = (char *)malloc(strlen(tokenB) + 1);
 			strcpy(strB[j], tokenB);
-			
 		}
 		else {
 			wordToCompareB = strdup(strB[j - 1]);
 			break;
 		}
+		j++; 
 	}
 
 	if (wordToCompareB == NULL) {
