@@ -24,7 +24,8 @@ int wordcompare(const void *string1, const void *string2) {
 	char * str1[maxLineLength];
 	//allocate memory for the first word to be stored in
 	str1[0] = (char *) malloc(strlen(tokenized1) + 1);
-	strcpy(str1[0], tokenized1);
+	str1[0] = tokenized1;
+	
 
 	
 	//initialize the pointer to the word that we will be comparing
@@ -40,22 +41,30 @@ int wordcompare(const void *string1, const void *string2) {
 		if (tokenized1 != NULL) {
 			//allocate memory & set it to continue looking for the word to compare with
 			str1[i] = (char *) malloc(strlen(tokenized1) + 1);
-			strcpy(str1[i], tokenized1);
+			str1[i] = tokenized1;
+			
 		}
 		//if the next word is not null i.e. we're at the end of the line 
 		else {
 			//we use the previous word as the word to compare with instead
 			//using strdup instead of strcpy because word1 is a pointer
-			word1 = strdup(str1[i - 1]);
+			char * memword1 = (char *) malloc(strlen(str1[i - 1])); 
+			strcpy(memword1,str1[i - 1]);
+			
+			word1 = (char *) memword1;
 			
 		}
 		i++;
 	}
+	
 
 	//We traversed the entire line and we did not find the word that we were to sort on
 	//just use the last word on the line
 	if (word1 == NULL) {
-		word1 = strdup(tokenized1);
+		char * word1mem = (char *) malloc(strlen(tokenized1) + 1); 
+		strcpy(word1mem, tokenized1);
+		word1 = (char *) word1mem; 
+		
 	}
 
 	//Similar to how we created a copy of the line, chopped it up by spaces, and set the word to compare by
@@ -68,22 +77,31 @@ int wordcompare(const void *string1, const void *string2) {
 	
 	char * word2 = NULL;
 	str2[0] = (char *)malloc(strlen(tokenized2) + 1);
-	strcpy(str2[0], tokenized2);
+	str2[0] = tokenized2;
+	
 	int j = 1; 
 
 	while((j <= wordNum) && (tokenized2 != NULL)) {
 		tokenized2 = strtok(NULL, " ");
 		if (tokenized2 != NULL) {
 			str2[j]=(char *)malloc(strlen(tokenized2) + 1);
-			strcpy(str2[j], tokenized2);
+			str2[j]=tokenized2;
 		}
 		else {
-			word2 = strdup(str2[j - 1]);}
+			
+			char * memword2 = (char *) malloc(strlen(str2[j - 1])); 
+			strcpy(memword2, str2[j - 1]);
+			word2 = (char *) memword2;
+			//word2 = strdup(str2[j - 1]); 
+		}
+
 		j++; 
 	}
 
 	if (word2 == NULL) {
-		word2 = strdup(tokenized2);
+		char * word2mem = (char *) malloc(strlen(tokenized2) + 1); 
+		strcpy(word2mem, tokenized2);
+		word2= (char *) word2mem; 
 	}
 
 	//printf ("The word1 is: %s\n", word1); 
