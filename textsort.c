@@ -132,8 +132,10 @@ int main(int argc, char **argv)
 		//and the 3rd arg is the filename
 		sortByNum = -atoi(argv[1]);
 		if (sortByNum < 0) {// we convert the character entry into an integer if its less than 0	
+			fprintf(stderr, "Error: Bad command line parameters\n");
 			printf("file: %s\n", argv[2]);
 			printf("sortByNum: %d. Please check it fits the format of a dash followed by a number.\n", sortByNum); 
+			exit(1);
 		}
 		sortByNum = sortByNum - 1;
 		//if it's -1 then you sort on the first word
